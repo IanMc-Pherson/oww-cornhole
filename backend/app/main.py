@@ -22,6 +22,11 @@ class TeamCreate(BaseModel):
     captain_contact: Optional[str] = None
 
 
+class TeamJoin(BaseModel):
+    team_code: str
+    player: str
+
+
 class MatchCreate(BaseModel):
     match_id: str = Field(..., alias="matchId")
     round: int
@@ -79,6 +84,22 @@ def create_team(tid: str, payload: TeamCreate):
 def list_teams(tid: str):
     tourn = _get_tournament(tid)
     return {"teams": list(tourn["teams"].values())}
+
+
+@app.post("/t/{tid}/teams/join")
+def join_team(tid: str, payload: TeamJoin):
+    tourn = _get_tournament(tid)
+    target_team = None
+    for team in tourn["teams"].values():
+        if team.get("team_code") == payload.team_code:
+            target_team = team
+            break
+    if not target_team:
+        raise HTTPException(status_code=404, detail="team not found")
+    if len(target_team.get("players", [])) >= 3:
+        raise HTTPException(status_code=400, detail="team full")
+    target_team["players"].append({"name": payload.player})
+    return {"ok": True, "data": {"teamId": target_team["teamId"]}}
 
 
 @app.post("/t/{tid}/matches")

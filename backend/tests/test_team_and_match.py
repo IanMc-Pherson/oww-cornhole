@@ -54,3 +54,39 @@ def test_create_team_and_score_flow():
     matches = {m["matchId"]: m for m in resp.json()["matches"]}
     assert matches["m1"]["status"] == "final"
     assert matches["m2"]["teamA_id"] == team_a["teamId"]
+
+
+def test_join_team():
+    client = TestClient(app)
+    tid = "t1"
+
+    team = create_team(client, tid, "Bag Bandits")
+
+    # join as a substitute player
+    resp = client.post(
+        f"/t/{tid}/teams/join",
+        json={"team_code": team["team_code"], "player": "Sub"},
+    )
+    assert resp.status_code == 200
+    assert resp.json()["ok"] is True
+
+    # verify player added
+    teams_resp = client.get(f"/t/{tid}/teams")
+    teams = {t["teamId"]: t for t in teams_resp.json()["teams"]}
+    players = teams[team["teamId"]]["players"]
+    assert len(players) == 3
+    assert any(p["name"] == "Sub" for p in players)
+
+    # team now full
+    resp = client.post(
+        f"/t/{tid}/teams/join",
+        json={"team_code": team["team_code"], "player": "Extra"},
+    )
+    assert resp.status_code == 400
+
+    # invalid team code
+    resp = client.post(
+        f"/t/{tid}/teams/join",
+        json={"team_code": "BADCODE", "player": "X"},
+    )
+    assert resp.status_code == 404
