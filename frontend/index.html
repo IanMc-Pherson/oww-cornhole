@@ -3,9 +3,70 @@
 <head>
   <meta charset="UTF-8" />
   <title>Cornhole Tournament</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Cornhole Tournament</h1>
-  <p>Frontend coming soon.</p>
+  <nav>
+    <button data-view="register">Register</button>
+    <button data-view="bracket">Bracket</button>
+    <button data-view="schedule">Schedule</button>
+    <button data-view="nownext">Now / Next</button>
+    <button data-view="score">Score</button>
+    <button data-view="rules">Rules</button>
+  </nav>
+
+  <section id="view-register" class="view">
+    <h2>Team Registration</h2>
+    <form id="create-team-form">
+      <label>Team Name <input name="team_name" required></label>
+      <label>Player 1 <input name="player1" required></label>
+      <label>Player 2 <input name="player2" required></label>
+      <label>Captain Contact <input name="contact" required></label>
+      <button type="submit">Create Team</button>
+    </form>
+    <div id="register-result" class="result"></div>
+
+    <h3>Join Existing Team</h3>
+    <form id="join-team-form">
+      <label>Team Code <input name="team_code" required></label>
+      <label>Your Name <input name="player" required></label>
+      <button type="submit">Join Team</button>
+    </form>
+    <div id="join-result" class="result"></div>
+  </section>
+
+  <section id="view-bracket" class="view hidden">
+    <h2>Bracket</h2>
+    <pre id="bracket-container">Loading...</pre>
+  </section>
+
+  <section id="view-schedule" class="view hidden">
+    <h2>Schedule</h2>
+    <table id="schedule-table"></table>
+  </section>
+
+  <section id="view-nownext" class="view hidden">
+    <h2>Now / Next</h2>
+    <pre id="nownext-container">Loading...</pre>
+  </section>
+
+  <section id="view-score" class="view hidden">
+    <h2>Submit Score</h2>
+    <form id="score-form">
+      <label>Match ID <input name="matchId" required></label>
+      <label>Team A Score <input type="number" name="scoreA" required></label>
+      <label>Team B Score <input type="number" name="scoreB" required></label>
+      <label>PIN <input type="password" name="pin" required></label>
+      <button type="submit">Submit Score</button>
+    </form>
+    <div id="score-result" class="result"></div>
+  </section>
+
+  <section id="view-rules" class="view hidden">
+    <h2>Rules</h2>
+    <div id="rules-container">Loading...</div>
+  </section>
+
+  <script src="app.js"></script>
 </body>
 </html>
